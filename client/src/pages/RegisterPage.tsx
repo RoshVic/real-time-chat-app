@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { register } from "../api/authAPI";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@apollo/client/react";
+
+import { REGISTER_USER } from "../api/authAPI";
 import "../css/style.css";
 
 export default function RegisterPage() {
@@ -11,16 +13,31 @@ export default function RegisterPage() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    const [register] = useMutation(REGISTER_USER, {
+        variables: {
+            data: {
+                email,
+                password,
+                name: username,
+            },
+        },
+    });
+
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         setMessage("");
         setLoading(true);
         try {
-            await register(email, password, username);
-            setMessage("Registration is successful! Now login.");
-            setEmail("");
-            setPassword("");
-            setUsername("");
+            const registerData = await register();
+
+            if (registerData.data) {
+                setMessage("Registration is successful!");
+                setEmail("");
+                setPassword("");
+                setUsername("");
+            } else {
+                setMessage("Registration error.");
+            }
         } catch {
             setMessage("Registration error.");
         } finally {

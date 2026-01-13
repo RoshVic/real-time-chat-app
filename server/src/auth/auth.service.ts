@@ -132,8 +132,18 @@ export class AuthService {
     return user;
   }
 
-  private auth(res: Response, id: string) {
+  private async auth(res: Response, id: string) {
     const { accessToken, refreshToken } = this.generateTokens(id);
+
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
     this.setCookie(
       res,
@@ -141,7 +151,7 @@ export class AuthService {
       new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     );
 
-    return { accessToken };
+    return { accessToken, username: user.name };
   }
 
   private generateTokens(id: string) {

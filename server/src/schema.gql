@@ -4,6 +4,7 @@
 
 type AuthModel {
   accessToken: String!
+  username: String!
 }
 
 """

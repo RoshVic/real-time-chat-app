@@ -1,11 +1,22 @@
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@apollo/client/react";
+
 import { useAuth } from "../hooks/useAuth";
 import "../css/style.css";
+import { LOGOUT_USER } from "../api/authAPI";
 
 export default function HomePage() {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
     const { logout } = useAuth();
+
+    const [logoutMutate] = useMutation(LOGOUT_USER);
+
+    const handleLogout = async () => {
+        await logoutMutate();
+
+        logout();
+    };
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -36,7 +47,7 @@ export default function HomePage() {
                         </button>
                         <button
                             className="bg-gray-500 text-white text-center py-2 px-4 rounded-lg w-full hover:bg-gray-600 mt-2"
-                            onClick={() => logout()}
+                            onClick={() => handleLogout()}
                         >
                             Logout
                         </button>

@@ -9,7 +9,9 @@ export function MyForm() {
         event.preventDefault();
         setIsLoading(true);
 
-        socket.timeout(5000).emit("chat", value, () => {
+        const username = sessionStorage.getItem("username");
+
+        socket.timeout(1).emit("foo-message", `${username}: ` + value, () => {
             setIsLoading(false);
         });
     }

@@ -10,12 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@apollo/client": "^4.0.11",
     "@tailwindcss/vite": "^4.1.18",
     "@types/socket.io": "^3.0.1",
     "dotenv": "^17.2.3",
+    "graphql": "^16.12.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.10.1",
+    "rxjs": "^7.8.2",
     "socket.io-client": "^4.8.1",
     "tailwindcss": "^4.1.18"
   },

@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { login } from "../api/authAPI";
-import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@apollo/client/react";
+
+import { useAuth } from "../hooks/useAuth";
+import { LOGIN_USER } from "../api/authAPI";
 import "../css/style.css";
 
 export default function LoginPage() {
@@ -12,13 +14,30 @@ export default function LoginPage() {
     const { logining } = useAuth();
     const navigate = useNavigate();
 
+    const [login] = useMutation(LOGIN_USER, {
+        variables: {
+            data: {
+                email,
+                password,
+            },
+        },
+    });
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
         setLoading(true);
         try {
-            const data = await login(email, password);
-            logining(data.accessToken);
+            const loginData = await login();
+
+            if (loginData && loginData.data) {
+                logining(loginData.data.login.accessToken, loginData.data.login.username);
+
+                setEmail("");
+                setPassword("");
+            } else {
+                setError("Login error.");
+            }
         } catch (err) {
             setError("Wrong email or password");
         } finally {

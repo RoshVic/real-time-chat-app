@@ -1,29 +1,62 @@
-export const API_URL = "http://localhost:3000";
+import { gql, type TypedDocumentNode } from "@apollo/client";
 
-export async function register(email: string, password: string, name: string) {
-    try {
-        const res = await fetch(`${API_URL}/auth/register`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password, name }),
-        });
+type registerMutationType = {
+    register: {
+        accessToken: string;
+        username: string;
+    };
+};
 
-        return res.json();
-    } catch (error) {
-        console.log(error);
+type registerMutationVariables = {
+    data: {
+        email: string;
+        password: string;
+        name: string;
+    };
+};
+
+export const REGISTER_USER: TypedDocumentNode<registerMutationType, registerMutationVariables> = gql`
+    mutation RegisterUser($data: RegisterInput!) {
+        register(data: $data) {
+            accessToken
+            username
+        }
     }
-}
+`;
 
-export async function login(email: string, password: string) {
-    try {
-        const res = await fetch(`${API_URL}/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-        });
+type loginMutationType = {
+    login: {
+        accessToken: string;
+        username: string;
+    };
+};
 
-        return res.json();
-    } catch (error) {
-        console.log(error);
+type loginMutationVariables = {
+    data: {
+        email: string;
+        password: string;
+    };
+};
+
+export const LOGIN_USER: TypedDocumentNode<loginMutationType, loginMutationVariables> = gql`
+    mutation LoginUser($data: LoginInput!) {
+        login(data: $data) {
+            accessToken
+            username
+        }
     }
-}
+`;
+
+type logoutMutationType = {
+    logout: {
+        logout: boolean;
+    };
+};
+
+type logoutMutationVariables = {};
+
+export const LOGOUT_USER: TypedDocumentNode<logoutMutationType, logoutMutationVariables> = gql`
+    mutation Logout {
+        logout
+    }
+`;
