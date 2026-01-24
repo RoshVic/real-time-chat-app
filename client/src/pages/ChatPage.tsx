@@ -21,20 +21,18 @@ export default function ChatPage() {
 
     useEffect(() => {
         function onConnect() {
-            setIsConnected(true);
             setFooEvents((previous) => [...previous, "New user connected!"]);
         }
 
         function onDisconnect() {
-            setIsConnected(false);
-            setFooEvents((previous) => [...previous, "User disconnected"]);
+            setFooEvents((previous) => [...previous, "User disconnected."]);
         }
 
         function onFooEvent(value: String) {
             setFooEvents((previous) => [...previous, value]);
         }
 
-        socket.on("user-onnect", onConnect);
+        socket.on("user-connect", onConnect);
         socket.on("user-disconnect", onDisconnect);
         socket.on("foo-message", onFooEvent);
 
@@ -66,7 +64,7 @@ export default function ChatPage() {
 
             <div className="chat-room text-white flex justify-center grid">
                 <ConnectionState isConnected={isConnected} />
-                <ConnectionManager />
+                <ConnectionManager setIsConnected={setIsConnected} />
                 <Events events={fooEvents} />
 
                 <MyForm />

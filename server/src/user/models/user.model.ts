@@ -34,4 +34,10 @@ export class UserModel extends BaseModel implements User {
     description: 'User role',
   })
   role: UserRole;
+
+  @Field(() => UserRole, {
+    nullable: true,
+    description: 'JWT access token',
+  })
+  accessToken: UserRole;
 }

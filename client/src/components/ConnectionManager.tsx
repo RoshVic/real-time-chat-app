@@ -1,12 +1,21 @@
+import { type Dispatch, type SetStateAction } from "react";
 import { socket } from "../socket";
 
-export function ConnectionManager() {
+export function ConnectionManager({ setIsConnected }: { setIsConnected: Dispatch<SetStateAction<boolean>> }) {
     function connect() {
         socket.connect();
+
+        if (socket.connected) {
+            setIsConnected(true);
+        }
     }
 
     function disconnect() {
         socket.disconnect();
+
+        if (!socket.connected) {
+            setIsConnected(false);
+        }
     }
 
     return (
