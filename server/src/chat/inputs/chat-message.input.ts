@@ -7,5 +7,5 @@ export class ChatMessageInput {
   @IsString()
   @IsNotEmpty()
   @Length(2, 255)
-  text: string;
+  message: string;
 }

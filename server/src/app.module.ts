@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PrismaModule } from './prisma/prisma.module';
 import { GraphQLModule } from '@nestjs/graphql';
-import { getGraphQLConfig } from './config/graphql.config';
 import { ApolloDriver } from '@nestjs/apollo';
+
+import { PrismaModule } from './prisma/prisma.module';
+import { getGraphQLConfig } from './config/graphql.config';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ChatModule } from './chat/chat.module';

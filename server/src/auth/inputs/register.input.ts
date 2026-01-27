@@ -7,7 +7,7 @@ export class RegisterInput {
   @IsString()
   @IsNotEmpty()
   @Length(3, 50)
-  name: string;
+  username: string;
 
   @Field(() => String)
   @IsString()

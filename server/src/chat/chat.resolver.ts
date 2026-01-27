@@ -16,19 +16,4 @@ export class ChatResolver {
   ) {
     return this.chatService.addMessage(req, input);
   }
-
-  //   @Mutation(() => AuthModel)
-  //   async login(@Context() { res }: GqlContext, @Args('data') input: LoginInput) {
-  //     return this.authService.login(res, input);
-  //   }
-
-  //   @Mutation(() => AuthModel)
-  //   async refresh(@Context() { req, res }: GqlContext) {
-  //     return this.authService.refresh(req, res);
-  //   }
-
-  //   @Mutation(() => Boolean)
-  //   async logout(@Context() { res }: GqlContext) {
-  //     return this.authService.logout(res);
-  //   }
 }

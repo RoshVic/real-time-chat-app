@@ -12,7 +12,7 @@ model User {
   email String @unique
   password String
 
-  name String?
+  username String
   role UserRole @default(USER)
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -20,9 +20,8 @@ model User {
   
   chatMessages ChatMessage[] @relation("user_chatmessages")
 
-  // chatRooms ChatRoom[] @relation("users_and_chatrooms")
-
-  // ownedChatRooms ChatRoom[] @relation("chatroom_owner")
+  chatRooms ChatRoom[] @relation("users_and_chatrooms")
+  ownedChatRooms ChatRoom[] @relation("chatroom_owner")
 }
 
   enum UserRole {
@@ -30,34 +29,34 @@ model User {
     ADMIN
   }
 
-// model ChatRoom {
-//   id String @id @default(uuid())
+model ChatRoom {
+  id String @id @default(uuid())
 
-//   name String
+  roomname String
 
-//   owner User? @relation("chatroom_owner", fields: [ownerId], references: [id])
-//   ownerId String?
+  owner User @relation("chatroom_owner", fields: [ownerId], references: [id])
+  ownerId String
 
-//   createdAt DateTime @default(now()) @map("created_at")
-//   updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-//   chatMessages ChatMessage[] @relation("chatroom_chatmessages")
+  chatMessages ChatMessage[] @relation("chatroom_chatmessages")
 
-//   user User[] @relation("users_and_chatrooms")
+  user User[] @relation("users_and_chatrooms")
 
-//   @@map("chat_room")
-// }
+  @@map("chat_room")
+}
 
 model ChatMessage {
   id String @id @default(uuid())
 
-  text String
+  message String
 
-  user User? @relation("user_chatmessages", fields: [userId], references: [id])
-  userId String?
+  user User @relation("user_chatmessages", fields: [userId], references: [id])
+  userId String
 
-  // chatRoom ChatRoom? @relation("chatroom_chatmessages", fields: [chatRoomId], references: [id])
-  // chatRoomId String?
+  chatRoom ChatRoom @relation("chatroom_chatmessages", fields: [chatRoomId], references: [id])
+  chatRoomId String
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

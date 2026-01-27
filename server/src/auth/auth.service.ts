@@ -4,13 +4,14 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { hash, verify } from 'argon2';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import type { JwtPayload } from './interfaces/jwt.interface';
 import type { StringValue } from 'ms';
 import type { Request, Response } from 'express';
+
+import { PrismaService } from 'src/prisma/prisma.service';
+import type { JwtPayload } from './interfaces/jwt.interface';
 import { isDev } from 'src/utils/is-dev.util';
 import { RegisterInput } from './inputs/register.input';
 import { LoginInput } from './inputs/login.input';
@@ -38,7 +39,7 @@ export class AuthService {
   }
 
   async register(res: Response, input: RegisterInput) {
-    const { name, email, password } = input;
+    const { username, email, password } = input;
 
     const existUser = await this.prismaService.user.findUnique({
       where: {
@@ -52,7 +53,7 @@ export class AuthService {
 
     const user = await this.prismaService.user.create({
       data: {
-        name,
+        username,
         email,
         password: await hash(password),
       },
@@ -151,7 +152,7 @@ export class AuthService {
       new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     );
 
-    return { accessToken, username: user.name };
+    return { accessToken };
   }
 
   private generateTokens(id: string) {
