@@ -31,7 +31,7 @@ export default function LoginPage() {
             const loginData = await login();
 
             if (loginData && loginData.data) {
-                logining(loginData.data.login.accessToken, loginData.data.login.username);
+                logining(loginData.data.login.accessToken);
 
                 setEmail("");
                 setPassword("");
