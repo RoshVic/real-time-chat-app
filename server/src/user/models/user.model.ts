@@ -16,7 +16,7 @@ export class UserModel extends BaseModel implements User {
     defaultValue: 'John',
     description: 'User name',
   })
-  name: string;
+  username: string;
 
   @Field(() => String, {
     nullable: false,
@@ -35,10 +35,4 @@ export class UserModel extends BaseModel implements User {
     description: 'User role',
   })
   role: UserRole;
-
-  @Field(() => UserRole, {
-    nullable: true,
-    description: 'JWT access token',
-  })
-  accessToken: UserRole;
 }

@@ -4,15 +4,28 @@
 
 type AuthModel {
   accessToken: String!
-  username: String!
 }
 
 input ChatMessageInput {
+  chatRoomId: String!
   text: String!
 }
 
 type ChatMessageModel {
-  accepted: Boolean!
+  createdAt: String!
+  id: String!
+  text: String!
+  username: String!
+}
+
+input ChatRoomInput {
+  roomname: String!
+}
+
+type ChatRoomModel {
+  createdAt: String!
+  id: String!
+  roomname: String!
 }
 
 """
@@ -27,6 +40,7 @@ input LoginInput {
 
 type Mutation {
   addMessage(data: ChatMessageInput!): ChatMessageModel!
+  createChatRoom(data: ChatRoomInput!): ChatRoomModel!
   login(data: LoginInput!): AuthModel!
   logout: Boolean!
   refresh: AuthModel!
@@ -36,27 +50,23 @@ type Mutation {
 type Query {
   """This is a method to get all user data"""
   getAllUsers: [UserModel!]!
+  getChatRooms: [ChatRoomModel!]!
   getOneUser: UserModel!
 }
 
 input RegisterInput {
   email: String!
-  name: String!
   password: String!
+  username: String!
 }
 
 """User Model"""
 type UserModel {
-  """JWT access token"""
-  accessToken: UserRole
   createdAt: DateTime!
 
   """User email"""
   email: String!
   id: ID!
-
-  """User name"""
-  name: String!
 
   """User password"""
   password: String!
@@ -64,6 +74,9 @@ type UserModel {
   """User role"""
   role: UserRole!
   updatedAt: DateTime!
+
+  """User name"""
+  username: String!
 }
 
 enum UserRole {

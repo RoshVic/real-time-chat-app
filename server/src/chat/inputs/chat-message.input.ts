@@ -7,5 +7,11 @@ export class ChatMessageInput {
   @IsString()
   @IsNotEmpty()
   @Length(2, 255)
-  message: string;
+  text: string;
+
+  @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
+  @Length(2, 63)
+  chatRoomId: string;
 }

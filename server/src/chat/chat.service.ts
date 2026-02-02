@@ -1,75 +1,98 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import type { StringValue } from 'ms';
-import type { Request, Response } from 'express';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { PrismaService } from 'src/prisma/prisma.service';
-import { JwtPayload } from 'src/auth/interfaces/jwt.interface';
 import { ChatMessageInput } from './inputs/chat-message.input';
+import { ChatRoomInput } from './inputs/chat-room.input';
 
 @Injectable()
 export class ChatService {
-  private readonly JWT_ACCESS_TOKEN_TTL: StringValue;
-  private readonly JWT_REFRESH_TOKEN_TTL: StringValue;
+  constructor(private readonly prismaService: PrismaService) {}
 
-  private readonly COOKIE_DOMAIN: string;
+  async addMessage(userId: string, input: ChatMessageInput) {
+    const { text, chatRoomId } = input;
 
-  constructor(
-    private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
-  ) {
-    this.JWT_ACCESS_TOKEN_TTL = configService.getOrThrow<StringValue>(
-      'JWT_ACCESS_TOKEN_TTL',
-    );
-    this.JWT_REFRESH_TOKEN_TTL = configService.getOrThrow<StringValue>(
-      'JWT_REFRESH_TOKEN_TTL',
-    );
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        username: true,
+      },
+    });
 
-    this.COOKIE_DOMAIN = configService.getOrThrow<string>('COOKIE_DOMAIN');
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const chatRoom = await this.prismaService.chatRoom.findUnique({
+      where: { id: chatRoomId },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!chatRoom) {
+      throw new NotFoundException('User not found');
+    }
+
+    const newMessage = await this.prismaService.chatMessage.create({
+      data: {
+        text,
+        userId: user.id,
+        chatRoomId: chatRoom.id,
+      },
+    });
+
+    return {
+      id: newMessage.id,
+      text: newMessage.text,
+      username: user.username,
+      createdAt: newMessage.createdAt,
+    };
   }
 
-  async addMessage(req: Request, input: ChatMessageInput) {
-    const { message } = input;
+  async getChatRooms(userId: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+      select: {
+        chatRooms: true,
+      },
+    });
 
-    const authHeaders = req.headers.authorization;
-    if (!authHeaders) {
-      throw new UnauthorizedException('Unauthorized');
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
 
-    const accessToken = authHeaders.split(' ')[1];
-    if (!accessToken) {
-      throw new UnauthorizedException('Unauthorized');
+    return user.chatRooms;
+  }
+
+  async createChatRoom(userId: string, input: ChatRoomInput) {
+    const { roomname } = input;
+
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
 
-    const payload: JwtPayload = await this.jwtService.verifyAsync(accessToken);
-
-    if (payload) {
-      const user = await this.prismaService.user.findUnique({
-        where: { id: payload.id },
-        select: {
-          id: true,
+    const chatRoom = await this.prismaService.chatRoom.create({
+      data: {
+        roomname,
+        ownerId: user.id,
+        users: {
+          connect: { id: user.id },
         },
-      });
+      },
+    });
 
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-
-      const newMessage = await this.prismaService.chatMessage.create({
-        data: {
-          message: message,
-          userId: user.id,
-          chatRoomId: '1234', // temp
-        },
-      });
-
-      return { message };
-    }
+    return {
+      id: chatRoom.id,
+      roomname: chatRoom.roomname,
+      createdAt: chatRoom.createdAt,
+    };
   }
 }
