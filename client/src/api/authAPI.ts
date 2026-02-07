@@ -3,7 +3,6 @@ import { gql, type TypedDocumentNode } from "@apollo/client";
 type registerMutationType = {
     register: {
         accessToken: string;
-        username: string;
     };
 };
 
@@ -11,7 +10,7 @@ type registerMutationVariables = {
     data: {
         email: string;
         password: string;
-        name: string;
+        username: string;
     };
 };
 
@@ -19,7 +18,6 @@ export const REGISTER_USER: TypedDocumentNode<registerMutationType, registerMuta
     mutation RegisterUser($data: RegisterInput!) {
         register(data: $data) {
             accessToken
-            username
         }
     }
 `;
@@ -27,7 +25,6 @@ export const REGISTER_USER: TypedDocumentNode<registerMutationType, registerMuta
 type loginMutationType = {
     login: {
         accessToken: string;
-        username: string;
     };
 };
 
@@ -42,7 +39,6 @@ export const LOGIN_USER: TypedDocumentNode<loginMutationType, loginMutationVaria
     mutation LoginUser($data: LoginInput!) {
         login(data: $data) {
             accessToken
-            username
         }
     }
 `;

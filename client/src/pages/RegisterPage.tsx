@@ -18,7 +18,7 @@ export default function RegisterPage() {
             data: {
                 email,
                 password,
-                name: username,
+                username,
             },
         },
     });

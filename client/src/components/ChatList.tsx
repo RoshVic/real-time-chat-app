@@ -6,7 +6,7 @@ export function ChatList({ chats }: { chats: ChatRoom[] }) {
         <div className="flex flex-col gap-2">
             {chats.map((chat) => (
                 <Link key={chat.id} to={`/chats/${chat.id}`} className="bg-gray-800 p-3 rounded hover:bg-gray-700">
-                    {chat.name}
+                    {chat.roomname}
                 </Link>
             ))}
         </div>

@@ -1,36 +1,58 @@
 import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@apollo/client/react";
+
 import { type ChatRoom } from "../types/chat";
+import { CREATE_CHAT, FETCH_CHATS } from "../api/chatAPI";
 
 export function useChats() {
     const [chats, setChats] = useState<ChatRoom[]>([]);
     const [loading, setLoading] = useState(false);
+    const [roomname, setRoomName] = useState("");
+
+    const { data } = useQuery(FETCH_CHATS, {
+        context: {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+            },
+            credentials: "include",
+        },
+    });
+
+    const [createChatRoom] = useMutation(CREATE_CHAT, {
+        context: {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+        },
+        variables: {
+            data: {
+                roomname,
+            },
+        },
+    });
 
     const fetchChats = async () => {
         setLoading(true);
 
-        const res = await fetch("http://localhost:3001/chats", {
-            credentials: "include",
-            headers: {
-                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-            },
-        });
+        console.log(data);
 
-        const data = await res.json();
-        setChats(data);
+        if (data) setChats(data.getChatRooms);
 
         setLoading(false);
     };
 
     const createChat = async (name: string) => {
-        const res = await fetch("http://localhost:3001/chats", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ name }),
-        });
+        setRoomName(name);
 
-        const chat = await res.json();
-        setChats((prev) => [...prev, chat]);
+        const mutationRes = await createChatRoom();
+        const chat = mutationRes.data?.createChatRoom;
+        if (chat) {
+            setChats((prev) => [...prev, chat]);
+        }
+
+        setRoomName("");
     };
 
     useEffect(() => {

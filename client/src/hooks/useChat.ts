@@ -7,8 +7,8 @@ export function useChat() {
     const [connected, setConnected] = useState(false);
 
     useEffect(() => {
-        socket.on("connect", () => setConnected(true));
-        socket.on("disconnect", () => setConnected(false));
+        socket.on("user-connect", () => setConnected(true));
+        socket.on("user-disconnect", () => setConnected(false));
 
         socket.on("chat:message", (msg: ChatMessage) => {
             setMessages((prev) => [...prev, msg]);

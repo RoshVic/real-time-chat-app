@@ -41,9 +41,9 @@ export default function HomePage() {
                     <>
                         <button
                             className="bg-[#5AF] text-white text-center py-2 px-4 rounded-lg w-full hover:bg-gray-600 mt-2"
-                            onClick={() => navigate("/chat")}
+                            onClick={() => navigate("/chats")}
                         >
-                            Tasks
+                            Chats
                         </button>
                         <button
                             className="bg-gray-500 text-white text-center py-2 px-4 rounded-lg w-full hover:bg-gray-600 mt-2"

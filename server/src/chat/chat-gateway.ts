@@ -32,9 +32,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  @SubscribeMessage('foo-message')
+  @SubscribeMessage('chat:message')
   handleNewMessage(@MessageBody() message: string) {
     console.log(message);
-    this.server.emit('foo-message', message);
+    this.server.emit('chat:message', message);
   }
 }

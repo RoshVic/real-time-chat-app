@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const logining = (accessToken: string) => {
         sessionStorage.setItem("accessToken", accessToken);
         setIsAuthenticated(true);
-        navigate("/chat");
+        navigate("/chats");
     };
 
     const logout = () => {
