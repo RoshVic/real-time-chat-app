@@ -1,5 +1,6 @@
-import { type ChatRoom } from "../types/chat";
 import { Link } from "react-router-dom";
+
+import { type ChatRoom } from "../types/chat";
 
 export function ChatList({ chats }: { chats: ChatRoom[] }) {
     return (

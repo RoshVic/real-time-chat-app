@@ -6,18 +6,6 @@ type AuthModel {
   accessToken: String!
 }
 
-input ChatMessageInput {
-  chatRoomId: String!
-  text: String!
-}
-
-type ChatMessageModel {
-  createdAt: String!
-  id: String!
-  text: String!
-  username: String!
-}
-
 input ChatRoomInput {
   roomname: String!
 }
@@ -39,7 +27,6 @@ input LoginInput {
 }
 
 type Mutation {
-  addMessage(data: ChatMessageInput!): ChatMessageModel!
   createChatRoom(data: ChatRoomInput!): ChatRoomModel!
   login(data: LoginInput!): AuthModel!
   logout: Boolean!

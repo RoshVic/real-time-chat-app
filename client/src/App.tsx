@@ -4,8 +4,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ChatsPage from "./pages/ChatsPage";
 import ChatPage from "./pages/ChatPage";
-import ChatsPage from "./pages/ChatPages";
 
 function App() {
     return (
@@ -22,7 +22,7 @@ function App() {
                 }
             />
             <Route
-                path="/chat"
+                path="/chats/:id"
                 element={
                     <ProtectedRoute>
                         <ChatPage />

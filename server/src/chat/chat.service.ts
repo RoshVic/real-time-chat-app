@@ -62,7 +62,9 @@ export class ChatService {
       throw new NotFoundException('User not found');
     }
 
-    return user.chatRooms;
+    const chatRooms = await this.prismaService.chatRoom.findMany();
+
+    return chatRooms;
   }
 
   async createChatRoom(userId: string, input: ChatRoomInput) {

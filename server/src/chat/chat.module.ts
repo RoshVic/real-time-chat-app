@@ -7,6 +7,7 @@ import { ChatGateway } from './chat-gateway';
 import { ChatResolver } from './chat.resolver';
 import { ChatService } from './chat.service';
 import { getJwtConfig } from 'src/config/jwt.config';
+import { AuthService } from 'src/auth/auth.service';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { getJwtConfig } from 'src/config/jwt.config';
       inject: [ConfigService],
     }),
   ],
-  providers: [ChatService, ChatResolver, ChatGateway],
+  providers: [ChatService, ChatResolver, ChatGateway, AuthService],
 })
 export class ChatModule {}
