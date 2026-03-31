@@ -1,11 +1,8 @@
 import { gql, type TypedDocumentNode } from "@apollo/client";
+import type { ChatMessage, ChatRoom } from "../types/chat";
 
 type FetchChatsQueryType = {
-    getChatRooms: {
-        id: string;
-        roomname: string;
-        createdAt: string;
-    }[];
+    getChatRooms: ChatRoom[];
 };
 
 type FetchChatsQueryVariables = {};
@@ -21,11 +18,7 @@ export const FETCH_CHATS: TypedDocumentNode<FetchChatsQueryType, FetchChatsQuery
 `;
 
 type CreateChatQueryType = {
-    createChatRoom: {
-        id: string;
-        roomname: string;
-        createdAt: string;
-    };
+    createChatRoom: ChatRoom;
 };
 
 type CreateChatQueryVariables = {
@@ -39,6 +32,27 @@ export const CREATE_CHAT: TypedDocumentNode<CreateChatQueryType, CreateChatQuery
         createChatRoom(data: $data) {
             id
             roomname
+            createdAt
+        }
+    }
+`;
+
+type FetchMessagesQueryType = {
+    getMessages: ChatMessage[];
+};
+
+type FetchMessagesQueryVariables = {
+    data: {
+        chatRoomId: string;
+    };
+};
+
+export const FETCH_MESSAGES: TypedDocumentNode<FetchMessagesQueryType, FetchMessagesQueryVariables> = gql`
+    query GetMessages($data: GetChatMessagesInput!) {
+        getMessages(data: $data) {
+            id
+            text
+            username
             createdAt
         }
     }

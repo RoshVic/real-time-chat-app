@@ -3,10 +3,52 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChatMessageInput } from './inputs/chat-message.input';
 import { ChatRoomInput } from './inputs/chat-room.input';
+import { GetChatMessagesInput } from './inputs/get-chat-messages.input';
 
 @Injectable()
 export class ChatService {
   constructor(private readonly prismaService: PrismaService) {}
+
+  async getMessages(userId: string, input: GetChatMessagesInput) {
+    const { chatRoomId } = input;
+
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        username: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const chatRoom = await this.prismaService.chatRoom.findUnique({
+      where: { id: chatRoomId },
+    });
+
+    if (!chatRoom) {
+      throw new NotFoundException('Chat room not found');
+    }
+
+    const messages = await this.prismaService.chatMessage.findMany({
+      where: { chatRoomId },
+      include: {
+        user: {
+          select: { username: true },
+        },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    return messages.map((msg) => ({
+      id: msg.id,
+      text: msg.text,
+      username: msg.user.username,
+      createdAt: msg.createdAt,
+    }));
+  }
 
   async addMessage(userId: string, input: ChatMessageInput) {
     const { text, chatRoomId } = input;
@@ -31,7 +73,7 @@ export class ChatService {
     });
 
     if (!chatRoom) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Chat room not found');
     }
 
     const newMessage = await this.prismaService.chatMessage.create({

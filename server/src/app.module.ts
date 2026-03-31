@@ -16,7 +16,6 @@ import { ChatModule } from './chat/chat.module';
     }),
     GraphQLModule.forRootAsync({
       driver: ApolloDriver,
-      imports: [ConfigModule],
       useFactory: getGraphQLConfig,
       inject: [ConfigService],
     }),

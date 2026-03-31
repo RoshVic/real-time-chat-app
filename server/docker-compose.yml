@@ -17,4 +17,4 @@ volumes:
   postgres-data:
 
 networks:
-  reat-time-chat:
+  real-time-chat:

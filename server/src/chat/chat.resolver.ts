@@ -6,6 +6,8 @@ import { Authorized } from 'src/auth/decorators/authorized.guard';
 import { Authorization } from 'src/auth/decorators/authorization.decorator';
 import { ChatRoomInput } from './inputs/chat-room.input';
 import { ChatRoomModel } from './models/chat-room.model';
+import { ChatMessageModel } from './models/chat-message.model';
+import { GetChatMessagesInput } from './inputs/get-chat-messages.input';
 
 @Resolver()
 export class ChatResolver {
@@ -24,5 +26,14 @@ export class ChatResolver {
     @Args('data') input: ChatRoomInput,
   ) {
     return this.chatService.createChatRoom(user.id, input);
+  }
+
+  @Authorization()
+  @Query(() => [ChatMessageModel])
+  async getMessages(
+    @Authorized() user: User,
+    @Args('data') input: GetChatMessagesInput,
+  ) {
+    return this.chatService.getMessages(user.id, input);
   }
 }

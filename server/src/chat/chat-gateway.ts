@@ -12,17 +12,16 @@ import { JwtService } from '@nestjs/jwt';
 
 import { ChatService } from './chat.service';
 import { JwtPayload } from 'src/auth/interfaces/jwt.interface';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from 'src/auth/auth.service';
 
 @WebSocketGateway(3001, {
   cors: {
     origin: ['http://localhost:5173'],
+    credentials: true,
   },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
-    private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
     private readonly chatService: ChatService,
     private readonly authService: AuthService,
@@ -31,14 +30,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
   handleConnection(client: Socket) {
-    client.emit('chat:room', true);
-
     console.log('User connected:', client.id);
   }
 
   handleDisconnect(client: Socket) {
-    client.emit('chat:room', false);
-
     console.log('User disconnected:', client.id);
   }
 
@@ -62,19 +57,35 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (connection) {
         await client.join(chatId);
 
-        client.broadcast.to(chatId).emit(`chat:receiveMessage`, {
-          text: `User ${user.username} joined the chat`,
-        });
+        client.emit('chat:room', { connection: true });
 
-        console.log(`User ${user.username} joined room ${chatId}`);
+        const newMessage = await this.chatService.addMessage(
+          `${process.env.SYSTEM_USER_ID}`,
+          {
+            text: `User ${user.username} joined the chat`,
+            chatRoomId: chatId,
+          },
+        );
+
+        client.broadcast.to(chatId).emit(`chat:receiveMessage`, newMessage);
+
+        console.log(newMessage);
       } else {
-        client.broadcast.to(chatId).emit(`chat:receiveMessage`, {
-          text: `User ${user.username} left the chat`,
-        });
+        const newMessage = await this.chatService.addMessage(
+          `${process.env.SYSTEM_USER_ID}`,
+          {
+            text: `User ${user.username} left the chat`,
+            chatRoomId: chatId,
+          },
+        );
+
+        client.broadcast.to(chatId).emit(`chat:receiveMessage`, newMessage);
+
+        client.emit('chat:room', { connection: false });
 
         await client.leave(chatId);
 
-        console.log(`User ${user.username} left room ${chatId}`);
+        console.log(newMessage);
       }
     }
   }

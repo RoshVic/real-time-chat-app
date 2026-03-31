@@ -5,22 +5,24 @@ export function ConnectionBar({ connected, connect, disconnect }: { connected: b
         if (connected) {
             const connectButton = document.getElementById("connect-button") as HTMLButtonElement;
             const disconnectButton = document.getElementById("disconnect-button") as HTMLButtonElement;
+            const chatInput = document.getElementById("chat-input") as HTMLButtonElement;
 
             connectButton.disabled = true;
             disconnectButton.disabled = false;
+            chatInput.disabled = false;
         }
     };
 
     const handleDisconnectButton = () => {
         disconnect();
 
-        if (!connected) {
-            const connectButton = document.getElementById("connect-button") as HTMLButtonElement;
-            const disconnectButton = document.getElementById("disconnect-button") as HTMLButtonElement;
+        const connectButton = document.getElementById("connect-button") as HTMLButtonElement;
+        const disconnectButton = document.getElementById("disconnect-button") as HTMLButtonElement;
+        const chatInput = document.getElementById("chat-input") as HTMLButtonElement;
 
-            connectButton.disabled = false;
-            disconnectButton.disabled = true;
-        }
+        connectButton.disabled = false;
+        disconnectButton.disabled = true;
+        chatInput.disabled = true;
     };
 
     return (
